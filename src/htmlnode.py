@@ -3,17 +3,7 @@ from __future__ import annotations
 from enum import Enum
 from typing import Optional
 
-
-class HTMLTags(Enum):
-    HTML = "html"  # ("html", "<html>", "</html>")
-    BODY = "body"  # ("body", "<body>", "</body>")
-    HEAD = "head"  # ("head", "<head>", "</head>")
-    PARAGRAPH = "p"  # ()"p", "<p>", "</p>")
-    LINK = "a"  # ("a", "<a>", "</a>")
-    IMAGE = "img"  # ("img", "<img />", None)
-    UNORDERED_LIST = "ul"  # ("ul", "<ul>", "</ul>")
-    ORDERED_LIST = "ol"  # ("ol", "<ol>", "</ol>")
-    LIST_ITEM = "li"  # ("li", "<li>", "</li>")
+from src.html_tags import HTMLTags
 
 
 class HTMLNode:
@@ -51,6 +41,13 @@ class HTMLNode:
     def to_html(self):
         raise NotImplementedError()
 
+    def _to_html_helper(self, tag: HTMLTags, value: str, props: dict | None) -> str:
+        result = tag.opening_tag()
+        if props:
+            result = result.replace(">", f"{self.props_to_html()}>")
+        result += value + tag.closing_tag()
+        return result
+
     def props_to_html(self):
         if not self.props:
             return ""
@@ -60,34 +57,3 @@ class HTMLNode:
             result = " ".join([result, f'{key}="{value}"'])
 
         return result
-
-
-class LeafNode(HTMLNode):
-    def __init__(
-        self, tag: str | None, value: str, props: dict[str, str] | None = None
-    ) -> None:
-        super().__init__(tag, value, None, props)
-
-    def to_html(self) -> str:
-        if not self.value:
-            raise ValueError("leaf node has no value")
-        if not self.tag:
-            return self.value
-        else:
-            match self.tag:
-                case HTMLTags.LINK.value:
-                    result = "<a>"
-                    if self.props:
-                        result = result.replace(">", f"{super().props_to_html()}>")
-                    else:
-                        print("no props")
-                    result += self.value + "</a>"
-                    return result
-                case HTMLTags.PARAGRAPH.value:
-                    result = "<p>"
-                    if self.props:
-                        result = result.replace(">", f"{super().props_to_html()}>")
-                    result += self.value + "</p>"
-                    return result
-                case _:
-                    raise ValueError("invalid tag type")

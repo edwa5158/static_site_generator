@@ -1,1 +1,4 @@
-python3 -m unittest discover -s src
+coverage erase \
+&& coverage run -m unittest discover -s src/tests \
+&& coverage report -m \
+&& coverage html

@@ -1,9 +1,9 @@
 import unittest
 
-from htmlnode import LeafNode
+from src.html_leafnode import LeafNode
 
 
-class TestTextNode(unittest.TestCase):
+class TestLeafeNode(unittest.TestCase):
     def test_leaf_to_html_p(self):
         node = LeafNode("p", "Hello, world!")
         self.assertEqual(node.to_html(), "<p>Hello, world!</p>")

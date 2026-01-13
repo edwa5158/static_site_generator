@@ -1,0 +1,8 @@
+[run]
+omit =
+    */tests/*
+    */test_*.py
+    */.venv/*
+    */__init__.py
+    .gitignore
+    */.gitignore
