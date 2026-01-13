@@ -25,6 +25,7 @@ class HTMLTags(Enum):
     H4 = "h4"
     H5 = "h5"
     H6 = "h6"
+    CODE = "code"
 
     def opening_tag(self) -> str:
         match self:
@@ -70,6 +71,8 @@ class HTMLTags(Enum):
                 return "<h5>"
             case HTMLTags.H6:
                 return "<h6>"
+            case HTMLTags.CODE:
+                return "<code>"
             case _:
                 raise ValueError("invalid tag type")
 
@@ -117,5 +120,7 @@ class HTMLTags(Enum):
                 return "</h5>"
             case HTMLTags.H6:
                 return "</h6>"
+            case HTMLTags.CODE:
+                return "</code>"
             case _:
                 raise ValueError("invalid tag type")

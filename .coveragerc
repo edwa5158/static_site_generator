@@ -1,4 +1,5 @@
 [run]
+source = src
 omit =
     */tests/*
     */test_*.py
@@ -6,3 +7,4 @@ omit =
     */__init__.py
     .gitignore
     */.gitignore
+    main.py
