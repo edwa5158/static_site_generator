@@ -91,3 +91,6 @@ class TestParentNode(unittest.TestCase):
         print(html_node.to_html())
         expected = """<html><head><title>My First HTML</title><meta charset="UTF-8"></head><body><div style="background-color:#FFF4A3;"><span><h2>London</h2><p>CSS styles are added to make it easier to separate the divs, and to make them more pretty:)</p></span></div></body></html>"""
         self.assertEqual(html_node.to_html(), expected)
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional
+from typing import Optional, Literal
 
 
 class TextType(Enum):
@@ -12,6 +12,16 @@ class TextType(Enum):
     LINK = "link"
     IMAGE = "image"
 
+    def delim(self) -> Literal["**", "_", "`"]:
+        match self:
+            case TextType.BOLD:
+                return "**"
+            case TextType.ITALIC:
+                return "_"
+            case TextType.CODE:
+                return "`"
+            case _:
+                raise RuntimeError("invalid TextType")
 
 class TextNode:
     def __init__(
@@ -52,6 +62,8 @@ class TextNode:
             case TextType.IMAGE:
                 if not text_node.url:
                     raise ValueError("images must have a url")
-                return LeafNode("img", "", {"src": text_node.url, "alt": text_node.text})
+                return LeafNode(
+                    "img", "", {"src": text_node.url, "alt": text_node.text}
+                )
             case _:
                 raise ValueError(f"invalid TextType {text_node.text_type = }")

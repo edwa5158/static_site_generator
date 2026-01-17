@@ -99,6 +99,5 @@ class TestTextNode(unittest.TestCase):
             TextNode.text_node_to_html_node(node)
         self.assertIn("invalid TextType", str(cm.exception))
 
-
 if __name__ == "__main__":
     unittest.main()

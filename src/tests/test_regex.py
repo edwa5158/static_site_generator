@@ -2,7 +2,6 @@ import unittest
 
 from src.regexes import extract_markdown_images, extract_markdown_links
 
-
 class TestExtractMarkdownImages(unittest.TestCase):
 
     def test_single_image(self):
@@ -42,3 +41,6 @@ class TestExtractLinks(unittest.TestCase):
             ),
         ]
         self.assertEqual(actual, expected)
+
+if __name__ == "__main__":
+    unittest.main()
