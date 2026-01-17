@@ -1,6 +1,6 @@
 import unittest
 
-from src.markdown_to_blocks import markdown_to_blocks
+from src.markdown_to_blocks import BlockType, block_to_block_type, markdown_to_blocks
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -92,6 +92,49 @@ class TestMarkdownToBlocks(unittest.TestCase):
             blocks,
             [],
         )
+
+
+class TestBlockToBlockType(unittest.TestCase):
+    def test_happy_path(self):
+        heading1 = "# heading 1"
+        heading2 = "## heading 2"
+        heading3 = "### heading 3"
+        heading4 = "#### heading 4"
+        heading5 = "##### heading 5"
+        heading6 = "###### heading 6"
+
+        code = """```
+    some code
+    some more code
+```"""
+        quote = "< some quote here >"
+        multi_line_quote = """<
+        multi
+        line
+        quote
+        >"""
+        unordered_list = "- first line\n- second line\n- third line"
+        ordered_list = "1. first line\n2. second line\n3. third line"
+        paragraph = "a paragraph"
+
+        btbt = block_to_block_type
+
+        self.assertEqual(btbt(heading1), BlockType.HEADING)
+        self.assertEqual(btbt(heading2), BlockType.HEADING)
+        self.assertEqual(btbt(heading3), BlockType.HEADING)
+        self.assertEqual(btbt(heading4), BlockType.HEADING)
+        self.assertEqual(btbt(heading5), BlockType.HEADING)
+        self.assertEqual(btbt(heading6), BlockType.HEADING)
+
+        self.assertEqual(btbt(code), BlockType.CODE)
+
+        self.assertEqual(btbt(quote), BlockType.QUOTE)
+        self.assertEqual(btbt(multi_line_quote), BlockType.QUOTE)
+
+        self.assertEqual(btbt(unordered_list), BlockType.UNDORDERED_LIST)
+        self.assertEqual(btbt(ordered_list), BlockType.ORDERED_LIST)
+
+        self.assertEqual(btbt(paragraph), BlockType.PARAGRAPH)
 
 
 if __name__ == "__main__":

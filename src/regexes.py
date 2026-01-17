@@ -21,3 +21,40 @@ def extract_markdown_links(text: str) -> list[tuple[str, str, str]]:
         result = (match.group("alt_text"), match.group("url"), match.group("link"))
         results.append(result)
     return results
+
+
+def is_heading(md: str) -> bool:
+    pat = r"#{1,6} [\w\d\s]+"
+    match = re.fullmatch(pat, md)
+    return True if match else False
+
+
+def is_code(md: str) -> bool:
+    pat = r"```\n[\s\S]*\n```"
+    match = re.fullmatch(pat, md)
+    return True if match else False
+
+
+def is_quote(md: str) -> bool:
+    pat = r"<\n[\s\S]*\n>"
+    match = re.fullmatch(pat, md)
+    return True if match else False
+
+
+def is_unordered_list(md: str) -> bool:
+    pat = r"\A(?:(- .*)\n{0,1})*\n{0,1}"
+    match = re.fullmatch(pat, md)
+    return True if match else False
+
+
+def is_ordered_list(md: str) -> bool:
+    lines = md.split("\n")
+    line_num = 1
+    for line in lines:
+        prefix = f"{line_num}. "
+        l = len(prefix)
+        if line[: l + 1] == prefix:
+            line_num += 1
+        else:
+            return False
+    return True
