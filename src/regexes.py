@@ -30,13 +30,13 @@ def is_heading(md: str) -> bool:
 
 
 def is_code(md: str) -> bool:
-    pat = r"```\n[\s\S]*\n```"
+    pat = r"```\n[\s\S]*```"
     match = re.fullmatch(pat, md)
     return True if match else False
 
 
 def is_quote(md: str) -> bool:
-    pat = r"<\n[\s\S]*\n>"
+    pat = r"<[\s\S]*>"
     match = re.fullmatch(pat, md)
     return True if match else False
 
@@ -52,8 +52,7 @@ def is_ordered_list(md: str) -> bool:
     line_num = 1
     for line in lines:
         prefix = f"{line_num}. "
-        l = len(prefix)
-        if line[: l + 1] == prefix:
+        if line[: len(prefix)] == prefix:
             line_num += 1
         else:
             return False

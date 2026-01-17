@@ -95,7 +95,11 @@ class TestMarkdownToBlocks(unittest.TestCase):
 
 
 class TestBlockToBlockType(unittest.TestCase):
-    def test_happy_path(self):
+    def __init__(self, methodName: str = "runTest") -> None:
+        super().__init__(methodName)
+        self.fn = block_to_block_type
+
+    def test_happy_headings(self):
         heading1 = "# heading 1"
         heading2 = "## heading 2"
         heading3 = "### heading 3"
@@ -103,38 +107,76 @@ class TestBlockToBlockType(unittest.TestCase):
         heading5 = "##### heading 5"
         heading6 = "###### heading 6"
 
+        self.assertEqual(self.fn(heading1), BlockType.HEADING)
+        self.assertEqual(self.fn(heading2), BlockType.HEADING)
+        self.assertEqual(self.fn(heading3), BlockType.HEADING)
+        self.assertEqual(self.fn(heading4), BlockType.HEADING)
+        self.assertEqual(self.fn(heading5), BlockType.HEADING)
+        self.assertEqual(self.fn(heading6), BlockType.HEADING)
+
+    def test_happy_code(self):
         code = """```
     some code
     some more code
 ```"""
+
+    def test_happy_quotes(self):
         quote = "< some quote here >"
         multi_line_quote = """<
         multi
         line
         quote
         >"""
+        self.assertEqual(self.fn(quote), BlockType.QUOTE)
+        self.assertEqual(self.fn(multi_line_quote), BlockType.QUOTE)
+
+    def test_happy_unordered_list(self):
         unordered_list = "- first line\n- second line\n- third line"
+        self.assertEqual(self.fn(unordered_list), BlockType.UNDORDERED_LIST)
+
+    def test_happy_orderd_list(self):
         ordered_list = "1. first line\n2. second line\n3. third line"
+        self.assertEqual(self.fn(ordered_list), BlockType.ORDERED_LIST)
+
+    def test_happy_paragraph(self):
         paragraph = "a paragraph"
+        self.assertEqual(self.fn(paragraph), BlockType.PARAGRAPH)
 
-        btbt = block_to_block_type
+    def test_wrong_input_type_none(self):
+        with self.assertRaises(TypeError) as cm:
+            _ = self.fn(None)  # type: ignore
 
-        self.assertEqual(btbt(heading1), BlockType.HEADING)
-        self.assertEqual(btbt(heading2), BlockType.HEADING)
-        self.assertEqual(btbt(heading3), BlockType.HEADING)
-        self.assertEqual(btbt(heading4), BlockType.HEADING)
-        self.assertEqual(btbt(heading5), BlockType.HEADING)
-        self.assertEqual(btbt(heading6), BlockType.HEADING)
+        if type(cm.exception) is not TypeError:
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
-        self.assertEqual(btbt(code), BlockType.CODE)
+    def test_wrong_input_type_int(self):
+        with self.assertRaises(TypeError) as cm:
+            _ = self.fn(int(3))  # type: ignore
 
-        self.assertEqual(btbt(quote), BlockType.QUOTE)
-        self.assertEqual(btbt(multi_line_quote), BlockType.QUOTE)
+        if type(cm.exception) is not TypeError:
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
-        self.assertEqual(btbt(unordered_list), BlockType.UNDORDERED_LIST)
-        self.assertEqual(btbt(ordered_list), BlockType.ORDERED_LIST)
+    def test_heading_without_space(self):
+        md = "#a bad heading"
+        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
 
-        self.assertEqual(btbt(paragraph), BlockType.PARAGRAPH)
+    def test_heading_with_leading_space(self):
+        md = " #a bad heading"
+        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
+
+    def test_heading_with_extra_space(self):
+        md = "#       a heading with lots of space"
+        self.assertEqual(self.fn(md), BlockType.HEADING)
+
+    def test_ordered_list_out_of_order(self):
+        md = "1. first line \n3. second line \n2. third line"
+        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
 
 
 if __name__ == "__main__":
