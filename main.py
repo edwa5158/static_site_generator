@@ -3,7 +3,8 @@ from src.textnode import TextNode, TextType
 
 
 def main():
-    print(delimiter_doesnt_match(TextType.BOLD, Delimiter.CODE.value))
+    # print(delimiter_doesnt_match(TextType.BOLD, Delimiter.CODE.value))
+    pass
 
 
 if __name__ == "__main__":

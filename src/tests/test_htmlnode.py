@@ -21,8 +21,10 @@ class TestHTMLNode(unittest.TestCase):
             node.to_html()
 
         if type(cm.exception) is not NotImplementedError:
-            print(f"different exception type detected: {type(cm.exception)}")
-            print(f"{cm.exception.__traceback__ = }")
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
     def test_repr(self):
         props = {

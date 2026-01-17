@@ -44,9 +44,11 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             parent_node.to_html()
 
-        if type(cm.exception) is not NotImplementedError:
-            print(f"different exception type detected: {type(cm.exception)}")
-            print(f"{cm.exception.__traceback__ = }")
+        if type(cm.exception) is not ValueError:
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
     def test_parentnode_to_html_raises_value_error_with_no_children(self):
         child_node = None
@@ -55,9 +57,11 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             parent_node.to_html()
 
-        if type(cm.exception) is not NotImplementedError:
-            print(f"different exception type detected: {type(cm.exception)}")
-            print(f"{cm.exception.__traceback__ = }")
+        if type(cm.exception) is not ValueError:
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
     def test_parentnode_to_html_raises_value_error_with_none_children(self):
         child_node = None
@@ -66,9 +70,11 @@ class TestParentNode(unittest.TestCase):
         with self.assertRaises(ValueError) as cm:
             parent_node.to_html()
 
-        if type(cm.exception) is not NotImplementedError:
-            print(f"different exception type detected: {type(cm.exception)}")
-            print(f"{cm.exception.__traceback__ = }")
+        if type(cm.exception) is not ValueError:
+            self.fail(
+                f"different exception type detected: {type(cm.exception)}"
+                + f"{cm.exception.__traceback__ = }"
+            )
 
     def test_full_dom(self):
         title_node = LeafNode("title", "My First HTML")
@@ -88,7 +94,6 @@ class TestParentNode(unittest.TestCase):
         body_node = ParentNode("body", [div_node])
         html_node = ParentNode("html", [head_node, body_node])
 
-        print(html_node.to_html())
         expected = """<html><head><title>My First HTML</title><meta charset="UTF-8"></head><body><div style="background-color:#FFF4A3;"><span><h2>London</h2><p>CSS styles are added to make it easier to separate the divs, and to make them more pretty:)</p></span></div></body></html>"""
         self.assertEqual(html_node.to_html(), expected)
 

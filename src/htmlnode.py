@@ -26,7 +26,6 @@ class HTMLNode:
         result += f"\t{self.value = },\n"
 
         if self.children:
-            print("self.children = true")
             result += f"\tself.children = {self.children},\n"
         else:
             result += f"\tself.children = None,\n"
