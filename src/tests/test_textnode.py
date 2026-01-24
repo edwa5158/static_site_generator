@@ -1,5 +1,6 @@
 import unittest
 
+from src.tests.utils import expected_error
 from src.textnode import TextNode, TextType
 
 
@@ -72,8 +73,9 @@ class TestTextNode(unittest.TestCase):
 
     def test_link_raises_without_url(self):
         node = TextNode("Boot.dev", TextType.LINK)
-        with self.assertRaises(ValueError) as cm:
-            TextNode.text_node_to_html_node(node)
+
+        fn = lambda: TextNode.text_node_to_html_node(node)
+        cm = expected_error(self, fn, ValueError)
         self.assertEqual(str(cm.exception), "links must have a url")
 
     def test_image_to_html_with_url(self):
@@ -88,16 +90,19 @@ class TestTextNode(unittest.TestCase):
 
     def test_image_raises_without_url(self):
         node = TextNode("alt text", TextType.IMAGE)
-        with self.assertRaises(ValueError) as cm:
-            TextNode.text_node_to_html_node(node)
+
+        fn = lambda: TextNode.text_node_to_html_node(node)
+        cm = expected_error(self, fn, ValueError)
         self.assertEqual(str(cm.exception), "images must have a url")
 
     def test_invalid_text_type_raises(self):
         node = TextNode("x", TextType.TEXT)
         node.text_type = "not-a-texttype"  # type: ignore[assignment]
-        with self.assertRaises(ValueError) as cm:
-            TextNode.text_node_to_html_node(node)
+
+        fn = lambda: TextNode.text_node_to_html_node(node)
+        cm = expected_error(self, fn, ValueError)
         self.assertIn("invalid TextType", str(cm.exception))
+
 
 if __name__ == "__main__":
     unittest.main()

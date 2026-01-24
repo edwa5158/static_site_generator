@@ -1,6 +1,7 @@
 import unittest
 
 from src.html_tags import HTMLTags
+from src.tests.utils import expected_error
 
 
 class TestHTMLTags(unittest.TestCase):
@@ -74,12 +75,10 @@ class TestHTMLTags(unittest.TestCase):
         self.assertEqual(HTMLTags.H6.closing_tag(), "</h6>")
 
     def test_opening_tag_invalid_raises(self):
-        with self.assertRaises(ValueError):
-            HTMLTags.opening_tag("not-a-tag")  # type: ignore
+        expected_error(self, lambda: HTMLTags.opening_tag("not-a-tag"), ValueError)  # type: ignore
 
     def test_closing_tag_invalid_raises(self):
-        with self.assertRaises(ValueError):
-            HTMLTags.closing_tag("not-a-tag")  # type: ignore
+        expected_error(self, lambda: HTMLTags.closing_tag("not-a-tag"), ValueError)  # type: ignore
 
 
 if __name__ == "__main__":

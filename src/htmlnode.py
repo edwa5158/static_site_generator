@@ -55,3 +55,11 @@ class HTMLNode:
             result = " ".join([result, f'{prop}="{value}"'])
 
         return result
+
+    def __eq__(self, other: HTMLNode) -> bool:
+        return (
+            self.tag == other.tag
+            and self.value == other.value
+            and self.props == other.props
+            and self.children == other.children
+        )

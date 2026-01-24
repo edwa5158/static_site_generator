@@ -1,6 +1,7 @@
 import unittest
 
-from src.markdown_to_blocks import BlockType, block_to_block_type, markdown_to_blocks
+from src.markdown_to_blocks import BlockType, block_to_block_type as b2bt, markdown_to_blocks
+from src.tests.utils import expected_error
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -32,24 +33,10 @@ class TestMarkdownToBlocks(unittest.TestCase):
         )
 
     def test_none(self):
-        with self.assertRaises(TypeError) as cm:
-            _ = markdown_to_blocks(None)  # type: ignore
-
-        if type(cm.exception) is not TypeError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        expected_error(self, lambda: markdown_to_blocks(None), TypeError)  # type: ignore
 
     def test_int(self):
-        with self.assertRaises(TypeError) as cm:
-            _ = markdown_to_blocks(1)  # type: ignore
-
-        if type(cm.exception) is not TypeError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        expected_error(self, lambda: markdown_to_blocks(1), TypeError)  # type: ignore
 
     def test_md_without_blocks(self):
         md: str = "This is **bolded** paragraph"
@@ -95,9 +82,6 @@ class TestMarkdownToBlocks(unittest.TestCase):
 
 
 class TestBlockToBlockType(unittest.TestCase):
-    def __init__(self, methodName: str = "runTest") -> None:
-        super().__init__(methodName)
-        self.fn = block_to_block_type
 
     def test_happy_headings(self):
         heading1 = "# heading 1"
@@ -107,12 +91,12 @@ class TestBlockToBlockType(unittest.TestCase):
         heading5 = "##### heading 5"
         heading6 = "###### heading 6"
 
-        self.assertEqual(self.fn(heading1), BlockType.HEADING)
-        self.assertEqual(self.fn(heading2), BlockType.HEADING)
-        self.assertEqual(self.fn(heading3), BlockType.HEADING)
-        self.assertEqual(self.fn(heading4), BlockType.HEADING)
-        self.assertEqual(self.fn(heading5), BlockType.HEADING)
-        self.assertEqual(self.fn(heading6), BlockType.HEADING)
+        self.assertEqual(b2bt(heading1), BlockType.HEADING)
+        self.assertEqual(b2bt(heading2), BlockType.HEADING)
+        self.assertEqual(b2bt(heading3), BlockType.HEADING)
+        self.assertEqual(b2bt(heading4), BlockType.HEADING)
+        self.assertEqual(b2bt(heading5), BlockType.HEADING)
+        self.assertEqual(b2bt(heading6), BlockType.HEADING)
 
     def test_happy_code(self):
         code = """```
@@ -127,56 +111,42 @@ class TestBlockToBlockType(unittest.TestCase):
         line
         quote
         >"""
-        self.assertEqual(self.fn(quote), BlockType.QUOTE)
-        self.assertEqual(self.fn(multi_line_quote), BlockType.QUOTE)
+        self.assertEqual(b2bt(quote), BlockType.QUOTE)
+        self.assertEqual(b2bt(multi_line_quote), BlockType.QUOTE)
 
     def test_happy_unordered_list(self):
         unordered_list = "- first line\n- second line\n- third line"
-        self.assertEqual(self.fn(unordered_list), BlockType.UNDORDERED_LIST)
+        self.assertEqual(b2bt(unordered_list), BlockType.UNDORDERED_LIST)
 
     def test_happy_orderd_list(self):
         ordered_list = "1. first line\n2. second line\n3. third line"
-        self.assertEqual(self.fn(ordered_list), BlockType.ORDERED_LIST)
+        self.assertEqual(b2bt(ordered_list), BlockType.ORDERED_LIST)
 
     def test_happy_paragraph(self):
         paragraph = "a paragraph"
-        self.assertEqual(self.fn(paragraph), BlockType.PARAGRAPH)
+        self.assertEqual(b2bt(paragraph), BlockType.PARAGRAPH)
 
     def test_wrong_input_type_none(self):
-        with self.assertRaises(TypeError) as cm:
-            _ = self.fn(None)  # type: ignore
-
-        if type(cm.exception) is not TypeError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        expected_error(self, lambda: b2bt(None), TypeError)  # type: ignore
 
     def test_wrong_input_type_int(self):
-        with self.assertRaises(TypeError) as cm:
-            _ = self.fn(int(3))  # type: ignore
-
-        if type(cm.exception) is not TypeError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        expected_error(self, lambda: b2bt(int(3)), TypeError)  # type: ignore
 
     def test_heading_without_space(self):
         md = "#a bad heading"
-        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
+        self.assertEqual(b2bt(md), BlockType.PARAGRAPH)
 
     def test_heading_with_leading_space(self):
         md = " #a bad heading"
-        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
+        self.assertEqual(b2bt(md), BlockType.PARAGRAPH)
 
     def test_heading_with_extra_space(self):
         md = "#       a heading with lots of space"
-        self.assertEqual(self.fn(md), BlockType.HEADING)
+        self.assertEqual(b2bt(md), BlockType.HEADING)
 
     def test_ordered_list_out_of_order(self):
         md = "1. first line \n3. second line \n2. third line"
-        self.assertEqual(self.fn(md), BlockType.PARAGRAPH)
+        self.assertEqual(b2bt(md), BlockType.PARAGRAPH)
 
 
 if __name__ == "__main__":

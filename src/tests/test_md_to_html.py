@@ -1,28 +1,28 @@
 import unittest
 
-from src.markdown_to_html import text_to_children
-
-
-def _render_children(children) -> str:
-    return "".join(child.to_html() for child in children)
-
-
-def _simplify_children(children):
-    return [
-        {
-            "tag": child.tag,
-            "value": child.value,
-            "props": child.props,
-        }
-        for child in children
-    ]
+from src.markdown_to_html import code_block_to_html as cb2html
+from src.markdown_to_html import text_to_children as t2c
+from src.tests.utils import expected_error
 
 
 class TestTextToHTML(unittest.TestCase):
+    def _render_children(self, children) -> str:
+        return "".join(child.to_html() for child in children)
+
+    def _simplify_children(self, children):
+        return [
+            {
+                "tag": child.tag,
+                "value": child.value,
+                "props": child.props,
+            }
+            for child in children
+        ]
+
     def _assert_case(self, md: str, expected, expected_html: str):
-        children = text_to_children(md)
-        self.assertEqual(_simplify_children(children), expected)
-        self.assertEqual(_render_children(children), expected_html)
+        children = t2c(md)
+        self.assertEqual(self._simplify_children(children), expected)
+        self.assertEqual(self._render_children(children), expected_html)
 
     def test_plain_text(self):
         self._assert_case(
@@ -204,3 +204,53 @@ class TestTextToHTML(unittest.TestCase):
             ],
             "Café <b>naïve</b>.",
         )
+
+
+class TestCodeBlockToChildren(unittest.TestCase):
+    def test_structure_simple(self):
+        node = cb2html("print('hi')")
+        from src.html_leafnode import LeafNode
+        from src.html_parentnode import ParentNode
+
+        self.assertIsInstance(node, ParentNode)
+        self.assertEqual(node.tag, "pre")
+        self.assertIsNone(node.props)
+        self.assertIsNotNone(node.children)
+        self.assertEqual(len(node.children), 1)  # type:ignore
+
+        child = node.children[0]  # type:ignore
+        self.assertIsInstance(child, LeafNode)
+        self.assertEqual(child.tag, "code")
+        self.assertEqual(child.value, "print('hi')")
+        self.assertIsNone(child.props)
+
+        self.assertEqual(node.to_html(), "<pre><code>print('hi')</code></pre>")
+
+    def test_multiline_preserved(self):
+        text = "line1\nline2\n"
+        node = cb2html(text)
+        self.assertEqual(node.to_html(), f"<pre><code>{text}</code></pre>")
+
+    def test_includes_fence_markers_if_present(self):
+        text = "```\ncode\n```"
+        node = cb2html(text)
+        self.assertEqual(node.to_html(), f"<pre><code>{text}</code></pre>")
+
+    def test_preserves_angle_brackets_no_escaping(self):
+        text = "<b>not escaped</b>"
+        node = cb2html(text)
+        self.assertEqual(node.to_html(), "<pre><code><b>not escaped</b></code></pre>")
+
+    def test_whitespace_only_is_allowed(self):
+        text = "   \n\t"
+        node = cb2html(text)
+        self.assertEqual(node.to_html(), f"<pre><code>{text}</code></pre>")
+
+    def test_empty_string_raises_on_render(self):
+        fn = lambda: cb2html(None).to_html()  # type: ignore
+        cm = expected_error(self, fn, ValueError)
+        self.assertEqual(str(cm.exception), "leaf node has no value")
+
+
+if __name__ == "__main__":
+    unittest.main()

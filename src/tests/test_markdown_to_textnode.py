@@ -1,11 +1,12 @@
 import unittest
 
+from src.markdown_to_textnode import split_nodes_delimiter as snbd
 from src.markdown_to_textnode import (
-    split_nodes_delimiter,
     split_nodes_image,
     split_nodes_link,
-    text_to_textnodes
+    text_to_textnodes,
 )
+from src.tests.utils import expected_error
 from src.textnode import TextNode, TextType
 
 
@@ -13,7 +14,7 @@ class TestMarkdownToTextNode(unittest.TestCase):
 
     def test_simple_code_conversion(self):
         node = TextNode("`2**3`", TextType.TEXT)
-        actual = split_nodes_delimiter([node], "`", TextType.CODE)
+        actual = snbd([node], "`", TextType.CODE)
         expected = [
             TextNode("", TextType.TEXT, None),
             TextNode("2**3", TextType.CODE, None),
@@ -23,7 +24,7 @@ class TestMarkdownToTextNode(unittest.TestCase):
 
     def test_another_code_conversion(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
-        actual = split_nodes_delimiter([node], "`", TextType.CODE)
+        actual = snbd([node], "`", TextType.CODE)
         expected = [
             TextNode("This is text with a ", TextType.TEXT),
             TextNode("code block", TextType.CODE),
@@ -33,7 +34,7 @@ class TestMarkdownToTextNode(unittest.TestCase):
 
     def test_simple_bold_conversion(self):
         node = TextNode("shouldn't be **should be** shouldn't be", TextType.TEXT)
-        actual = split_nodes_delimiter([node], "**", TextType.BOLD)
+        actual = snbd([node], "**", TextType.BOLD)
         expected = [
             TextNode("shouldn't be ", TextType.TEXT, None),
             TextNode("should be", TextType.BOLD, None),
@@ -43,13 +44,13 @@ class TestMarkdownToTextNode(unittest.TestCase):
 
     def test_bold_in_bold_out(self):
         node = TextNode("shouldn't be **should be** shouldn't be", TextType.BOLD)
-        actual = split_nodes_delimiter([node], "**", TextType.BOLD)
+        actual = snbd([node], "**", TextType.BOLD)
         expected = [node]
         self.assertEqual(actual, expected)
 
     def test_simple_italic_conversion(self):
         node = TextNode("shouldn't be _should be_ shouldn't be", TextType.TEXT)
-        actual = split_nodes_delimiter([node], "_", TextType.ITALIC)
+        actual = snbd([node], "_", TextType.ITALIC)
         expected = [
             TextNode("shouldn't be ", TextType.TEXT, None),
             TextNode("should be", TextType.ITALIC, None),
@@ -58,37 +59,22 @@ class TestMarkdownToTextNode(unittest.TestCase):
         self.assertEqual(actual, expected)
 
     def test_raises_value_error_with_none_nodes(self):
-
-        with self.assertRaises(ValueError) as cm:
-            _ = split_nodes_delimiter(None, "`", TextType.CODE)  # type: ignore
-
-        if type(cm.exception) is not ValueError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        fn = lambda: snbd(None, "`", TextType.CODE)  # type: ignore
+        expected_error(self, fn, ValueError)  # type: ignore
 
     def test_raises_value_error_with_mismatched_node_type(self):
-
-        with self.assertRaises(ValueError) as cm:
-            _ = split_nodes_delimiter([TextNode("some text", TextType.BOLD, None)], "`", TextType.BOLD)  # type: ignore
-
-        if type(cm.exception) is not ValueError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        fn = lambda: snbd(
+            [TextNode("some text", TextType.BOLD, None)], "`", TextType.BOLD
+        )
+        expected_error(self, fn, ValueError)
 
     def test_raises_value_error_with_unsupported_node_type(self):
-
-        with self.assertRaises(ValueError) as cm:
-            _ = split_nodes_delimiter([TextNode("some text", TextType.IMAGE, url="your/mom.jpeg")], "image", TextType.IMAGE)  # type: ignore
-
-        if type(cm.exception) is not ValueError:
-            self.fail(
-                f"different exception type detected: {type(cm.exception)}"
-                + f"{cm.exception.__traceback__ = }"
-            )
+        fn = lambda: snbd(
+            [TextNode("some text", TextType.IMAGE, url="your/mom.jpeg")],
+            "image",  # type: ignore
+            TextType.IMAGE,
+        )
+        expected_error(self, fn, ValueError)
 
 
 class TestSpliteNodesImage(unittest.TestCase):
@@ -133,11 +119,13 @@ class TestSpliteNodesImage(unittest.TestCase):
         )
 
     def test_split_images_with_text_after(self):
-        old_nodes = [TextNode(
-            " and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a ",
-            TextType.TEXT,
-            None,
-        )]
+        old_nodes = [
+            TextNode(
+                " and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a ",
+                TextType.TEXT,
+                None,
+            )
+        ]
         expected = [
             TextNode(" and an ", TextType.TEXT),
             TextNode(
@@ -146,8 +134,9 @@ class TestSpliteNodesImage(unittest.TestCase):
             TextNode(" and a ", TextType.TEXT),
         ]
         new_nodes = split_nodes_image(old_nodes)
-        
+
         self.assertEqual(new_nodes, expected)
+
 
 class TestSpliteNodesLink(unittest.TestCase):
     def test_split_links(self):
