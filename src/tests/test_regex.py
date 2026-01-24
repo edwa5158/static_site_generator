@@ -1,6 +1,7 @@
 import unittest
 
-from regexes import extract_markdown_images, extract_markdown_links
+from src.regexes import extract_markdown_images, extract_markdown_links
+
 
 class TestExtractMarkdownImages(unittest.TestCase):
 
@@ -40,6 +41,7 @@ class TestExtractLinks(unittest.TestCase):
             ),
         ]
         self.assertEqual(actual, expected)
+
 
 if __name__ == "__main__":
     unittest.main()

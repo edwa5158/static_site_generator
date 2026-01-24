@@ -182,9 +182,17 @@ dependencies = [
     { name = "pyrefly" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "coverage" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "black", specifier = ">=25.12.0" },
     { name = "coverage", specifier = ">=7.13.1" },
     { name = "pyrefly", specifier = ">=0.49.0" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "coverage", specifier = ">=7.13.1" }]

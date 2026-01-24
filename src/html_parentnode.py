@@ -1,5 +1,5 @@
-from html_tags import HTMLTags
-from htmlnode import HTMLNode
+from src.html_tags import HTMLTags
+from src.htmlnode import HTMLNode
 from typing import Sequence
 
 class ParentNode(HTMLNode):

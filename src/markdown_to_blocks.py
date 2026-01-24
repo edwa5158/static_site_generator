@@ -25,7 +25,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 
 
 def block_to_block_type(md: str) -> BlockType:
-    from regexes import (
+    from src.regexes import (
         is_code,
         is_heading,
         is_ordered_list,
@@ -35,7 +35,6 @@ def block_to_block_type(md: str) -> BlockType:
 
     if type(md) is not str:
         raise TypeError(f"invalid input type: {type(md)}, only str type accepted.")
-    
 
     if is_heading(md):
         return BlockType.HEADING

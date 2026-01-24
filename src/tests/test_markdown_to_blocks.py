@@ -1,8 +1,8 @@
 import unittest
 
-from markdown_to_blocks import BlockType
-from markdown_to_blocks import block_to_block_type as b2bt
-from markdown_to_blocks import markdown_to_blocks as md2b
+from src.markdown_to_blocks import BlockType
+from src.markdown_to_blocks import block_to_block_type as b2bt
+from src.markdown_to_blocks import markdown_to_blocks as md2b
 from tests.utils import expected_error
 
 

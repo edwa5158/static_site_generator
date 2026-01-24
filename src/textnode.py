@@ -46,8 +46,8 @@ class TextNode:
 
     @staticmethod
     def text_node_to_html_node(text_node: TextNode):
-        from html_leafnode import LeafNode
-        from htmlnode import HTMLNode
+        from src.html_leafnode import LeafNode
+        from src.htmlnode import HTMLNode
 
         match text_node.text_type:
             case TextType.TEXT:

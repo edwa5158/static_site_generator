@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Sequence
 
-from html_tags import HTMLTags
+from src.html_tags import HTMLTags
 
 
 class HTMLNode:
@@ -58,7 +58,7 @@ class HTMLNode:
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, HTMLNode):
-            raise NotImplemented
+            return NotImplemented
         return (
             self.tag == other.tag
             and self.value == other.value
