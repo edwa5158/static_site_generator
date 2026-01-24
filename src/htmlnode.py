@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Sequence
 
-from src.html_tags import HTMLTags
+from html_tags import HTMLTags
 
 
 class HTMLNode:
@@ -36,7 +36,7 @@ class HTMLNode:
         result += ")"
         return result
 
-    def to_html(self):
+    def to_html(self) -> str:
         raise NotImplementedError()
 
     def _to_html_helper(self, tag: HTMLTags, value: str, props: dict | None) -> str:
@@ -56,7 +56,9 @@ class HTMLNode:
 
         return result
 
-    def __eq__(self, other: HTMLNode) -> bool:
+    def __eq__(self, other: object) -> bool:
+        if not isinstance(other, HTMLNode):
+            raise NotImplemented
         return (
             self.tag == other.tag
             and self.value == other.value

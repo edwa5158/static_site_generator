@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Optional, Literal
+from typing import Literal, Optional, overload
 
 
 class TextType(Enum):
@@ -23,6 +23,7 @@ class TextType(Enum):
             case _:
                 raise RuntimeError("invalid TextType")
 
+
 class TextNode:
     def __init__(
         self, text: str, text_type: TextType, url: Optional[str] = None
@@ -31,11 +32,13 @@ class TextNode:
         self.text_type = text_type
         self.url = url
 
-    def __eq__(self, other: TextNode) -> bool:
+    def __eq__(self, value: object) -> bool:
+        if not isinstance(value, TextNode):
+            return NotImplemented
         return (
-            (self.text == other.text)
-            and (self.text_type == other.text_type)
-            and (self.url == other.url)
+            (self.text == value.text)
+            and (self.text_type == value.text_type)
+            and (self.url == value.url)
         )
 
     def __repr__(self) -> str:
@@ -43,8 +46,8 @@ class TextNode:
 
     @staticmethod
     def text_node_to_html_node(text_node: TextNode):
-        from src.html_leafnode import LeafNode
-        from src.htmlnode import HTMLNode
+        from html_leafnode import LeafNode
+        from htmlnode import HTMLNode
 
         match text_node.text_type:
             case TextType.TEXT:

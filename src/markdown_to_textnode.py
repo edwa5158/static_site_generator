@@ -1,8 +1,8 @@
 from enum import Enum
 from typing import Literal
 
-from src.regexes import extract_markdown_images, extract_markdown_links
-from src.textnode import TextNode, TextType
+from regexes import extract_markdown_images, extract_markdown_links
+from textnode import TextNode, TextType
 
 
 def delimiter_matches(text_type: TextType, delimiter: str) -> bool:

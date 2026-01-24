@@ -1,6 +1,6 @@
 import unittest
 
-from src.regexes import extract_markdown_images, extract_markdown_links
+from regexes import extract_markdown_images, extract_markdown_links
 
 class TestExtractMarkdownImages(unittest.TestCase):
 

@@ -1,7 +1,7 @@
 import unittest
 
-from src.html_tags import HTMLTags
-from src.tests.utils import expected_error
+from html_tags import HTMLTags
+from tests.utils import expected_error
 
 
 class TestHTMLTags(unittest.TestCase):

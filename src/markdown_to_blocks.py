@@ -25,7 +25,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 
 
 def block_to_block_type(md: str) -> BlockType:
-    from src.regexes import (
+    from regexes import (
         is_code,
         is_heading,
         is_ordered_list,

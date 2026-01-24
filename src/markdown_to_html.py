@@ -1,12 +1,12 @@
-import src.markdown_to_textnode as md2tn
-from src.html_leafnode import LeafNode
-from src.html_parentnode import ParentNode
-from src.html_tags import HTMLTags as t
-from src.htmlnode import HTMLNode
-from src.markdown_to_blocks import BlockType
-from src.markdown_to_blocks import block_to_block_type as b2bt
-from src.markdown_to_blocks import markdown_to_blocks as md2b
-from src.textnode import TextNode, TextType
+import markdown_to_textnode as md2tn
+from html_leafnode import LeafNode
+from html_parentnode import ParentNode
+from html_tags import HTMLTags as t
+from htmlnode import HTMLNode
+from markdown_to_blocks import BlockType
+from markdown_to_blocks import block_to_block_type as b2bt
+from markdown_to_blocks import markdown_to_blocks as md2b
+from textnode import TextNode, TextType
 
 
 def markdown_to_html(markdown: str) -> HTMLNode:

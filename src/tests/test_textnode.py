@@ -1,7 +1,7 @@
 import unittest
 
-from src.tests.utils import expected_error
-from src.textnode import TextNode, TextType
+from tests.utils import expected_error
+from textnode import TextNode, TextType
 
 
 class TestTextNode(unittest.TestCase):

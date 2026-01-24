@@ -1,8 +1,8 @@
 import unittest
 
-from src.html_tags import HTMLTags
-from src.htmlnode import HTMLNode
-from src.tests.utils import expected_error
+from html_tags import HTMLTags
+from htmlnode import HTMLNode
+from tests.utils import expected_error
 
 
 class TestHTMLNode(unittest.TestCase):
@@ -149,7 +149,7 @@ class TestHTMLNode(unittest.TestCase):
         self.assertEqual(a, b)
 
     def test_eq_raises_when_other_is_not_htmlnode(self):
-        expected_error(self, lambda: HTMLNode(tag="p")==object(), AttributeError)
+        expected_error(self, lambda: HTMLNode(tag="p") == object(), AttributeError)
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 import unittest
 
-from src.markdown_to_html import code_block_to_html as cb2html
-from src.markdown_to_html import text_to_children as t2c
-from src.tests.utils import expected_error
+from markdown_to_html import code_block_to_html as cb2html
+from markdown_to_html import text_to_children as t2c
+from tests.utils import expected_error
 
 
 class TestTextToHTML(unittest.TestCase):
@@ -209,8 +209,8 @@ class TestTextToHTML(unittest.TestCase):
 class TestCodeBlockToChildren(unittest.TestCase):
     def test_structure_simple(self):
         node = cb2html("print('hi')")
-        from src.html_leafnode import LeafNode
-        from src.html_parentnode import ParentNode
+        from html_leafnode import LeafNode
+        from html_parentnode import ParentNode
 
         self.assertIsInstance(node, ParentNode)
         self.assertEqual(node.tag, "pre")

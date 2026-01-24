@@ -1,7 +1,9 @@
 import unittest
 
-from src.markdown_to_blocks import BlockType, block_to_block_type as b2bt, markdown_to_blocks
-from src.tests.utils import expected_error
+from markdown_to_blocks import BlockType
+from markdown_to_blocks import block_to_block_type as b2bt
+from markdown_to_blocks import markdown_to_blocks as md2b
+from tests.utils import expected_error
 
 
 class TestMarkdownToBlocks(unittest.TestCase):
@@ -14,7 +16,7 @@ class TestMarkdownToBlocks(unittest.TestCase):
             "- This is a list\n"
             "- with items\n"
         )
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             [
@@ -26,21 +28,21 @@ class TestMarkdownToBlocks(unittest.TestCase):
 
     def test_empty_string(self):
         md: str = ""
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             [],
         )
 
     def test_none(self):
-        expected_error(self, lambda: markdown_to_blocks(None), TypeError)  # type: ignore
+        expected_error(self, lambda: md2b(None), TypeError)  # type: ignore
 
     def test_int(self):
-        expected_error(self, lambda: markdown_to_blocks(1), TypeError)  # type: ignore
+        expected_error(self, lambda: md2b(1), TypeError)  # type: ignore
 
     def test_md_without_blocks(self):
         md: str = "This is **bolded** paragraph"
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             ["This is **bolded** paragraph"],
@@ -48,7 +50,7 @@ class TestMarkdownToBlocks(unittest.TestCase):
 
     def test_md_with_empty_blocks(self):
         md: str = "This is **bolded** paragraph\n\n" + ""
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             ["This is **bolded** paragraph"],
@@ -62,7 +64,7 @@ class TestMarkdownToBlocks(unittest.TestCase):
             "- This is a list\n"
             "- with items\n"
         )
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             [
@@ -74,7 +76,7 @@ class TestMarkdownToBlocks(unittest.TestCase):
 
     def test_md_only_line_breaks_and_empty_strings(self):
         md: str = "" + "\n\n" + "" + "\n\n" + "" + "\n\n" "" + "\n\n" + "" + "\n\n"
-        blocks = markdown_to_blocks(md)
+        blocks = md2b(md)
         self.assertEqual(
             blocks,
             [],

@@ -1,0 +1,32 @@
+"filename", "language", "Shell Script", "toml", "Python", "JSON with Comments", "Markdown", "comment", "blank", "total"
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/README.md", "Markdown", 0, 0, 0, 0, 0, 0, 1, 1
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/main.py", "Python", 0, 0, 4, 0, 0, 0, 3, 7
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/main.sh", "Shell Script", 1, 0, 0, 0, 0, 0, 0, 1
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/pyproject.toml", "toml", 0, 10, 0, 0, 0, 0, 1, 11
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/__init__.py", "Python", 0, 0, 0, 0, 0, 0, 1, 1
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/html_leafnode.py", "Python", 0, 0, 15, 0, 0, 0, 4, 19
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/html_parentnode.py", "Python", 0, 0, 22, 0, 0, 0, 5, 27
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/html_tags.py", "Python", 0, 0, 133, 0, 0, 0, 7, 140
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/html_void_node.py", "Python", 0, 0, 11, 0, 0, 0, 5, 16
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/htmlnode.py", "Python", 0, 0, 51, 0, 0, 0, 15, 66
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/main.py", "Python", 0, 0, 4, 0, 0, 0, 3, 7
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/markdown_to_blocks.py", "Python", 0, 0, 40, 0, 0, 1, 11, 52
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/markdown_to_html.py", "Python", 0, 0, 41, 0, 0, 10, 12, 63
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/markdown_to_textnode.py", "Python", 0, 0, 104, 0, 0, 5, 25, 134
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/regexes.py", "Python", 0, 0, 43, 0, 0, 2, 15, 60
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/__init__.py", "Python", 0, 0, 0, 0, 0, 0, 1, 1
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_html_tags.py", "Python", 0, 0, 76, 0, 0, 0, 10, 86
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_htmlnode.py", "Python", 0, 0, 133, 0, 0, 0, 24, 157
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_leafnode.py", "Python", 0, 0, 16, 0, 0, 0, 7, 23
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_markdown_to_blocks.py", "Python", 0, 0, 125, 0, 0, 0, 29, 154
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_markdown_to_textnode.py", "Python", 0, 0, 177, 0, 0, 0, 28, 205
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_md_to_html.py", "Python", 0, 0, 223, 0, 0, 0, 34, 257
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_parentnode.py", "Python", 0, 0, 65, 0, 0, 0, 21, 86
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_regex.py", "Python", 0, 0, 38, 0, 0, 0, 8, 46
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/test_textnode.py", "Python", 0, 0, 84, 0, 0, 0, 25, 109
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/tests/utils.py", "Python", 0, 0, 21, 0, 0, 0, 5, 26
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/src/textnode.py", "Python", 0, 0, 60, 0, 0, 0, 9, 69
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/static_site_generator.code-workspace", "JSON with Comments", 0, 0, 0, 8, 0, 0, 0, 8
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/test.sh", "Shell Script", 4, 0, 0, 0, 0, 0, 1, 5
+"/home/jason/dev/boot.dev/github.com/edwa5158/static_site_generator/uv.lock", "toml", 0, 161, 0, 0, 0, 0, 12, 173
+"Total", "-", 5, 171, 1486, 8, 0, 18, 322, 2010
