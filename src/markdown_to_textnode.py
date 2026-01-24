@@ -1,24 +1,18 @@
 from enum import Enum
-from typing import Literal, TypeAlias, TypeVar
+from typing import Literal
 
 from src.regexes import extract_markdown_images, extract_markdown_links
 from src.textnode import TextNode, TextType
 
 
-class Delimiter(Enum):
-    BOLD = "**"
-    ITALIC = "_"
-    CODE = "`"
-
-
-def delimiter_doesnt_match(text_type: TextType, delimiter: str) -> bool:
+def delimiter_matches(text_type: TextType, delimiter: str) -> bool:
     match text_type:
         case TextType.BOLD:
-            return delimiter != Delimiter.BOLD.value
+            return delimiter == "**"
         case TextType.ITALIC:
-            return delimiter != Delimiter.ITALIC.value
+            return delimiter == "_"
         case TextType.CODE:
-            return delimiter != Delimiter.CODE.value
+            return delimiter == "`"
         case _:
             raise ValueError("Unsupported text type")
 
@@ -40,7 +34,7 @@ def split_nodes_delimiter(
     if not old_nodes:
         raise ValueError("`old_nodes` cannot be empty or None")
 
-    if delimiter_doesnt_match(text_type, delimiter):
+    if not delimiter_matches(text_type, delimiter):
         raise ValueError("the text_type and delimiter are incompatible or incorrect")
 
     new_nodes: list[TextNode] = []

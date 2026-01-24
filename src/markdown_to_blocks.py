@@ -9,23 +9,9 @@ class BlockType(Enum):
     UNDORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
 
-    @staticmethod
-    def delimiters():
-        result: list[str] = []
-        # paragraph
-        # None - matches this as the default
-        # headings
-        result.extend(["#" * i + " " for i in range(1, 7)])
-        # code
-        result.append("```" + "\n")
-        # quote
-
-        # unordered_list
-
-        # ordered_list
-
 
 def markdown_to_blocks(markdown: str) -> list[str]:
+    """It takes a raw Markdown string (representing a full document) as input and returns a list of "block" strings."""
     if not type(markdown) is str:
         raise TypeError(f"invalid input type {type(markdown)}; only strings accepted")
 

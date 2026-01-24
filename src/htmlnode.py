@@ -1,7 +1,6 @@
 from __future__ import annotations
 
-from enum import Enum
-from typing import Optional
+from typing import Optional, Sequence
 
 from src.html_tags import HTMLTags
 
@@ -12,7 +11,7 @@ class HTMLNode:
         self,
         tag: Optional[str] = None,
         value: Optional[str] = None,
-        children: Optional[list[HTMLNode]] = None,
+        children: Optional[Sequence[HTMLNode]] = None,
         props: Optional[dict[str, str]] = None,
     ) -> None:
         self.tag = tag
@@ -52,7 +51,7 @@ class HTMLNode:
             return ""
 
         result = ""
-        for key, value in self.props.items():
-            result = " ".join([result, f'{key}="{value}"'])
+        for prop, value in self.props.items():
+            result = " ".join([result, f'{prop}="{value}"'])
 
         return result

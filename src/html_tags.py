@@ -26,6 +26,11 @@ class HTMLTags(Enum):
     H5 = "h5"
     H6 = "h6"
     CODE = "code"
+    PRE = "pre"
+    BLOCKQUOTE = "blockquote"
+
+    def __str__(self):
+        return self.value
 
     def opening_tag(self) -> str:
         match self:
@@ -73,6 +78,10 @@ class HTMLTags(Enum):
                 return "<h6>"
             case HTMLTags.CODE:
                 return "<code>"
+            case HTMLTags.PRE:
+                return "<pre>"
+            case HTMLTags.BLOCKQUOTE:
+                return "<blockquote>"
             case _:
                 raise ValueError("invalid tag type")
 
@@ -122,5 +131,9 @@ class HTMLTags(Enum):
                 return "</h6>"
             case HTMLTags.CODE:
                 return "</code>"
+            case HTMLTags.PRE:
+                return "</pre>"
+            case HTMLTags.BLOCKQUOTE:
+                return "</blockquote>"
             case _:
                 raise ValueError("invalid tag type")
