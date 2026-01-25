@@ -1,5 +1,13 @@
 from enum import Enum
 
+from src.regexes import (
+    is_code,
+    is_heading,
+    is_ordered_list,
+    is_quote,
+    is_unordered_list,
+)
+
 
 class BlockType(Enum):
     PARAGRAPH = "paragraph"
@@ -25,15 +33,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 
 
 def block_to_block_type(md: str) -> BlockType:
-    from src.regexes import (
-        is_code,
-        is_heading,
-        is_ordered_list,
-        is_quote,
-        is_unordered_list,
-    )
-
-    if type(md) is not str:
+    if not isinstance(md, str):
         raise TypeError(f"invalid input type: {type(md)}, only str type accepted.")
 
     if is_heading(md):

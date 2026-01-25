@@ -1,7 +1,7 @@
 import src.markdown_to_textnode as md2tn
 from src.html_leafnode import LeafNode
 from src.html_parentnode import ParentNode
-from src.html_tags import HTMLTags as t
+from src.html_tags import HTMLTags
 from src.htmlnode import HTMLNode
 from src.markdown_to_blocks import BlockType
 from src.markdown_to_blocks import block_to_block_type as b2bt
@@ -10,8 +10,13 @@ from src.textnode import TextNode, TextType
 
 
 def markdown_to_html(markdown: str) -> HTMLNode:
+    if not isinstance(markdown, str):
+        raise TypeError
+
     blocks: list[str] = md2b(markdown)
     typed_blocks = {block: b2bt(block) for block in blocks}
+    children: list[HTMLNode] = []
+    child: HTMLNode
 
     for block, block_type in typed_blocks.items():
         # parent nodes must be passed a list of HTMLNodes as children,
@@ -19,41 +24,95 @@ def markdown_to_html(markdown: str) -> HTMLNode:
 
         match block_type:
             case BlockType.PARAGRAPH:
-                # may contain inline text nodes
-                pass
+                child = md_to_paragraph(block)
             case BlockType.HEADING:
-                # may contain inline text nodes
-                pass
+                child = md_to_heading(block)
             case BlockType.CODE:
-                return code_block_to_html(block)
+                child = code_block_to_html(block)
             case BlockType.QUOTE:
-                # surrounded by <blockquote>
-                pass
+                child = blockquote_to_html(block)
             case BlockType.UNDORDERED_LIST:
-                # wrap it in a <ul>
-                # children are <li>
-                # <li> may contain child nodes
-                pass
+                child = md_to_unordered_list(block)
             case BlockType.ORDERED_LIST:
-                # wrap it in a <ol>
-                # children are <li>
-                pass
+                child = md_to_ordered_list(block)
             case _:
                 raise ValueError("invalid block type detected")
+        children.append(ParentNode(HTMLTags.DIV.value, [child]))
 
-    result = HTMLNode()
+    body = ParentNode(HTMLTags.BODY.value, children)
+    return ParentNode(HTMLTags.HTML.value, [body])
+
+
+def md_to_paragraph(md: str) -> HTMLNode:
+    if not isinstance(md, str):
+        raise TypeError
+
+    children = text_to_children(md)
+    return ParentNode(HTMLTags.PARAGRAPH.value, children)
+
+
+def md_to_heading(md: str) -> HTMLNode:
+    if not isinstance(md, str):
+        raise TypeError
+
+    def map_heading(text: str) -> HTMLTags:
+        count = len(text) - len(text.lstrip("#"))
+        match count:
+            case 1:
+                return HTMLTags.H1
+            case 2:
+                return HTMLTags.H2
+            case 3:
+                return HTMLTags.H3
+            case 4:
+                return HTMLTags.H4
+            case 5:
+                return HTMLTags.H5
+            case 6:
+                return HTMLTags.H6
+            case _:
+                raise ValueError
+
+    children = text_to_children(md)
+    return ParentNode(map_heading(md).value, children)
+
+
+def md_to_unordered_list(md: str) -> HTMLNode:
+    if not isinstance(md, str):
+        raise TypeError
+    children = _list_items_to_html(md)
+    return ParentNode(HTMLTags.UNORDERED_LIST.value, children)
+
+
+def md_to_ordered_list(md: str) -> HTMLNode:
+    if not isinstance(md, str):
+        raise TypeError
+    children = _list_items_to_html(md)
+    return ParentNode(HTMLTags.ORDERED_LIST.value, children)
+
+
+def _list_items_to_html(md: str) -> list[ParentNode]:
+    if not isinstance(md, str):
+        raise TypeError
+
+    lines = md.split("\n")
+    result: list[ParentNode] = []
+    for line in lines:
+        children: list[HTMLNode] = text_to_children(line)
+        parent: ParentNode = ParentNode(HTMLTags.LIST_ITEM.value, children)
+        result.append(parent)
     return result
 
 
 def code_block_to_html(text: str):
-    children = [LeafNode(t.CODE.value, text, None)]
-    return ParentNode(t.PRE.value, children, None)
+    children = [LeafNode(HTMLTags.CODE.value, text, None)]
+    return ParentNode(HTMLTags.PRE.value, children, None)
 
 
 def blockquote_to_html(text: str):
     if not isinstance(text, str):
         raise TypeError
-    return ParentNode(t.BLOCKQUOTE.value, text_to_children(text), None)
+    return ParentNode(HTMLTags.BLOCKQUOTE.value, text_to_children(text), None)
 
 
 def text_to_children(text: str) -> list[HTMLNode]:

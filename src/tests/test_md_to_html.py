@@ -1,9 +1,16 @@
 import unittest
 
+import src.markdown_to_html as md2html_module
 from src.html_leafnode import LeafNode
 from src.html_parentnode import ParentNode
+from src.markdown_to_html import _list_items_to_html as li2html
 from src.markdown_to_html import blockquote_to_html as bq2html
 from src.markdown_to_html import code_block_to_html as cb2html
+from src.markdown_to_html import markdown_to_html as md2html
+from src.markdown_to_html import md_to_heading as md2h
+from src.markdown_to_html import md_to_ordered_list as md2ol
+from src.markdown_to_html import md_to_paragraph as md2p
+from src.markdown_to_html import md_to_unordered_list as md2ul
 from src.markdown_to_html import text_to_children as t2c
 from tests.utils import expected_error
 
@@ -367,7 +374,131 @@ class TestBlockQuoteToHTML(unittest.TestCase):
         expected_error(self, fn, TypeError)
 
 
-# ...existing code...
+class TestMarkdownToHtml(unittest.TestCase):
+    def test_invalid_input_type_raises(self):
+        fn = lambda: md2html(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
+    def test_renders_multiple_block_types(self):
+        md = """# Heading 1
+
+Paragraph text
+
+```
+code
+```
+
+<quote>
+
+- item one
+- item two
+
+1. first
+2. second"""
+
+        node = md2html(md)
+        self.assertIsInstance(node, ParentNode)
+        self.assertEqual(node.tag, "html")
+        self.assertEqual(
+            node.to_html(),
+            (
+                "<html><body>"
+                "<div><h1># Heading 1</h1></div>"
+                "<div><p>Paragraph text</p></div>"
+                "<div><pre><code>```\ncode\n```</code></pre></div>"
+                "<div><blockquote><quote></blockquote></div>"
+                "<div><ul><li>- item one</li><li>- item two</li></ul></div>"
+                "<div><ol><li>1. first</li><li>2. second</li></ol></div>"
+                "</body></html>"
+            ),
+        )
+
+    def test_duplicate_blocks_keep_last_due_to_dict(self):
+        md = "Repeat\n\nRepeat"
+        node = md2html(md)
+        self.assertEqual(
+            node.to_html(), "<html><body><div><p>Repeat</p></div></body></html>"
+        )
+
+    def test_invalid_block_type_raises(self):
+        original_b2bt = md2html_module.b2bt
+        try:
+            md2html_module.b2bt = lambda _: "unknown"  # type: ignore[assignment]
+            fn = lambda: md2html("Paragraph")
+            expected_error(self, fn, ValueError)
+        finally:
+            md2html_module.b2bt = original_b2bt
+
+
+class TestMarkdownToParagraph(unittest.TestCase):
+    def test_paragraph_structure(self):
+        node = md2p("Hello *ignored*")
+        self.assertIsInstance(node, ParentNode)
+        self.assertEqual(node.tag, "p")
+        self.assertEqual(node.to_html(), "<p>Hello *ignored*</p>")
+
+    def test_invalid_input_type_raises(self):
+        fn = lambda: md2p(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
+
+class TestMarkdownToHeading(unittest.TestCase):
+    def test_each_heading_level(self):
+        cases = {
+            "# H1": "h1",
+            "## H2": "h2",
+            "### H3": "h3",
+            "#### H4": "h4",
+            "##### H5": "h5",
+            "###### H6": "h6",
+        }
+        for md, tag in cases.items():
+            node = md2h(md)
+            self.assertIsInstance(node, ParentNode)
+            self.assertEqual(node.tag, tag)
+            self.assertEqual(node.to_html(), f"<{tag}>{md}</{tag}>")
+
+    def test_invalid_input_type_raises(self):
+        fn = lambda: md2h(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
+    def test_invalid_heading_level_raises(self):
+        fn = lambda: md2h("Heading without hash")
+        expected_error(self, fn, ValueError)
+
+
+class TestMarkdownLists(unittest.TestCase):
+    def test_unordered_list_structure(self):
+        node = md2ul("- a\n- b")
+        self.assertIsInstance(node, ParentNode)
+        self.assertEqual(node.tag, "ul")
+        self.assertEqual(node.to_html(), "<ul><li>- a</li><li>- b</li></ul>")
+
+    def test_ordered_list_structure(self):
+        node = md2ol("1. a\n2. b")
+        self.assertIsInstance(node, ParentNode)
+        self.assertEqual(node.tag, "ol")
+        self.assertEqual(node.to_html(), "<ol><li>1. a</li><li>2. b</li></ol>")
+
+    def test_list_items_helper(self):
+        items = li2html("- a\n- b")
+        self.assertEqual(len(items), 2)
+        self.assertTrue(all(isinstance(item, ParentNode) for item in items))
+        self.assertEqual(items[0].to_html(), "<li>- a</li>")
+        self.assertEqual(items[1].to_html(), "<li>- b</li>")
+
+    def test_unordered_list_invalid_input_raises(self):
+        fn = lambda: md2ul(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
+    def test_ordered_list_invalid_input_raises(self):
+        fn = lambda: md2ol(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
+    def test_list_items_invalid_input_raises(self):
+        fn = lambda: li2html(None)  # type: ignore
+        expected_error(self, fn, TypeError)
+
 
 if __name__ == "__main__":
     unittest.main()
