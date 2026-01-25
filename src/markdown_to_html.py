@@ -51,6 +51,8 @@ def code_block_to_html(text: str):
 
 
 def blockquote_to_html(text: str):
+    if not isinstance(text, str):
+        raise TypeError
     return ParentNode(t.BLOCKQUOTE.value, text_to_children(text), None)
 
 
