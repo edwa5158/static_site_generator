@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Literal
 
-from src.regexes import extract_markdown_images, extract_markdown_links
+from src.parse_markdown import extract_markdown_images, extract_markdown_links
 from src.textnode import TextNode, TextType
 
 

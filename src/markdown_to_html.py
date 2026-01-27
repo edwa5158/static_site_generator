@@ -3,9 +3,9 @@ from src.html_leafnode import LeafNode
 from src.html_parentnode import ParentNode
 from src.html_tags import HTMLTags
 from src.htmlnode import HTMLNode
-from src.markdown_to_blocks import BlockType
-from src.markdown_to_blocks import block_to_block_type as b2bt
-from src.markdown_to_blocks import markdown_to_blocks as md2b
+from src.parse_markdown import BlockType
+from src.parse_markdown import block_to_block_type as b2bt
+from src.parse_markdown import markdown_to_blocks as md2b
 from src.textnode import TextNode, TextType
 
 
