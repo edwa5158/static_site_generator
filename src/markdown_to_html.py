@@ -7,6 +7,7 @@ from html_tags import HTMLTags
 from htmlnode import HTMLNode
 from parse_markdown import BlockType
 from parse_markdown import block_to_block_type as b2bt
+from parse_markdown import extract_title
 from parse_markdown import markdown_to_blocks as md2b
 from textnode import TextNode, TextType
 
@@ -75,7 +76,11 @@ def md_to_heading(md: str) -> HTMLNode:
             case _:
                 raise ValueError
 
-    children = text_to_children(md.lstrip("#").lstrip())
+    if map_heading(md) == HTMLTags.H1:
+        children = text_to_children(extract_title(md))
+    else:
+        children = text_to_children(md.lstrip("#").lstrip())
+
     return ParentNode(map_heading(md).value, children)
 
 

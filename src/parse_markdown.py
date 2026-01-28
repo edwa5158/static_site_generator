@@ -72,7 +72,7 @@ def extract_title(md: str) -> str:
     blocks = markdown_to_blocks(md)
     for block in blocks:
         if is_title(block):
-            return block[2:]
+            return block.strip()[2:]
 
     error_message = (
         "\n\n\n" + "The markdown is missing a title".center(100, "=") + "\n\n"
@@ -93,7 +93,7 @@ def is_title(md: str) -> bool:
 
 
 def is_heading(md: str) -> bool:
-    pat = r"#{1,6} [\w\d\s]+"
+    pat = r"#{1,6} .*"
     match = re.fullmatch(pat, md)
     return True if match else False
 

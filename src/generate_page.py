@@ -1,14 +1,13 @@
 import os
-from signal import valid_signals
 
 from markdown_to_html import markdown_to_html
 from parse_markdown import extract_title
 
 
 def generate_page(from_md_file: str, html_template_file: str, html_dest_dir: str):
-    print(
-        f"Generating page from {from_md_file} to {html_dest_dir} using {html_template_file}"
-    )
+    # print(
+    #     f"Generating page from {from_md_file} to {html_dest_dir} using {html_template_file}"
+    # )
 
     md_full_path: str = os.path.abspath(from_md_file)
     template_full_path: str = os.path.abspath(html_template_file)
@@ -20,7 +19,8 @@ def generate_page(from_md_file: str, html_template_file: str, html_dest_dir: str
     with open(template_full_path) as f:
         template = f.read()
 
-    html_content = markdown_to_html(md).to_html()
+    html_nodes = markdown_to_html(md)
+    html_content = html_nodes.to_html()
     title = extract_title(md)
     html = template.replace("{{ Title }}", title)
     html = html.replace("{{ Content }}", html_content)
@@ -58,34 +58,25 @@ def generate_pages_recursive(
 
 
 def dfs_visit(current_source_dir: str, template_path: str, dest_dir: str, visited: set):
-    print(
-        f"\n\ndfs_visit called:\n\t{current_source_dir = }\n\t{template_path = }\n\t{dest_dir = }\n\t{visited = }\n"
-    )
     stack: list[str] = []
     visited.add(current_source_dir)
 
     # Copy all the files in current_source_dir to dest_dir
     for fso_name in os.listdir(current_source_dir):
         item_path = os.path.join(current_source_dir, fso_name)
-        print(f"\n\n{item_path = }")
         if os.path.isfile(item_path):
             # item_path is a file, so make an html page in the destimation
-            print(f"{fso_name} is a file")
             if os.path.splitext(item_path)[1] == ".md":
-                print(f"{fso_name} is a markdown file")
                 generate_page(item_path, template_path, dest_dir)
         else:
             # item path is a dir, so put it on the stack and create the dest dir
-            print(f"{fso_name} is a directory")
             stack.append(item_path)
-            print(f"{fso_name} appended to the stack\n\t{stack = }")
             os.makedirs(os.path.join(dest_dir, fso_name), exist_ok=True)
 
     while len(stack) > 0:
         next_source_dir = stack.pop()
         dir_name = os.path.basename(next_source_dir)
         new_dest_dir = os.path.join(dest_dir, dir_name)
-        print(f"{new_dest_dir = }")
         next_source_dir_path = os.path.join(current_source_dir, next_source_dir)
         dfs_visit(next_source_dir_path, template_path, new_dest_dir, visited)
 
