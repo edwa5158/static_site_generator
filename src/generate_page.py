@@ -1,6 +1,8 @@
 import os
+from sys import argv
 from typing import Optional
 
+from get_static import get_static_assets
 from markdown_to_html import markdown_to_html
 from parse_markdown import extract_title
 
@@ -101,10 +103,19 @@ def dfs_visit(
 
 
 def main():
-    content = "static"
-    template = "template.html"
-    dest = "public"
-    generate_pages_recursive(content, template, dest)
+    # content = "static"
+    # template = "template.html"
+    # dest = "public"
+    # basepath =
+    # generate_pages_recursive(content, template, dest, basepath)
+
+    basepath: str = argv[0] or "\\"
+
+    static = "static"
+    public = "docs"
+    get_static_assets(static, public)
+
+    generate_pages_recursive("content", "template.html", public, basepath)
 
 
 if __name__ == "__main__":

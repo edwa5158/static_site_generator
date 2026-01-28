@@ -13,9 +13,10 @@ def get_static_assets(static_dir: str, public_dir: str) -> None:
     if not (isinstance(static_dir, str) and isinstance(public_dir, str)):
         raise TypeError
 
-    if not (os.path.exists(static_dir) and os.path.exists(public_dir)):
-        raise ValueError
-
+    # if not (os.path.exists(static_dir) and os.path.exists(public_dir)):
+    #     raise ValueError
+    os.makedirs(static_dir, exist_ok=True)
+    os.makedirs(public_dir, exist_ok=True)
     if not (os.path.isdir(static_dir) and os.path.isdir(public_dir)):
         raise NotADirectoryError
 
