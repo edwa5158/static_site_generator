@@ -1,10 +1,16 @@
 import os
+from typing import Optional
 
 from markdown_to_html import markdown_to_html
 from parse_markdown import extract_title
 
 
-def generate_page(from_md_file: str, html_template_file: str, html_dest_dir: str):
+def generate_page(
+    from_md_file: str,
+    html_template_file: str,
+    html_dest_dir: str,
+    basepath: str,
+):
     # print(
     #     f"Generating page from {from_md_file} to {html_dest_dir} using {html_template_file}"
     # )
@@ -24,6 +30,8 @@ def generate_page(from_md_file: str, html_template_file: str, html_dest_dir: str
     title = extract_title(md)
     html = template.replace("{{ Title }}", title)
     html = html.replace("{{ Content }}", html_content)
+    html = html.replace('href="/', f'href="{basepath}')
+    html = html.replace('src="/', f"{basepath}")
 
     # if not os.path.exists(dest_full_path):
     os.makedirs(html_dest_full_path, exist_ok=True)
@@ -35,7 +43,10 @@ def generate_page(from_md_file: str, html_template_file: str, html_dest_dir: str
 
 
 def generate_pages_recursive(
-    from_md_dir: str, html_template_file: str, html_dest_dir: str
+    from_md_dir: str,
+    html_template_file: str,
+    html_dest_dir: str,
+    basepath: str,
 ) -> None:
     if not (
         isinstance(from_md_dir, str)
@@ -54,10 +65,18 @@ def generate_pages_recursive(
     md_content_dir: str = os.path.abspath(from_md_dir)
     html_template_file: str = os.path.abspath(html_template_file)
     html_output_directory: str = os.path.abspath(html_dest_dir)
-    dfs_visit(md_content_dir, html_template_file, html_output_directory, visited)
+    dfs_visit(
+        md_content_dir, html_template_file, html_output_directory, visited, basepath
+    )
 
 
-def dfs_visit(current_source_dir: str, template_path: str, dest_dir: str, visited: set):
+def dfs_visit(
+    current_source_dir: str,
+    template_path: str,
+    dest_dir: str,
+    visited: set,
+    basepath: str,
+):
     stack: list[str] = []
     visited.add(current_source_dir)
 
@@ -67,7 +86,7 @@ def dfs_visit(current_source_dir: str, template_path: str, dest_dir: str, visite
         if os.path.isfile(item_path):
             # item_path is a file, so make an html page in the destimation
             if os.path.splitext(item_path)[1] == ".md":
-                generate_page(item_path, template_path, dest_dir)
+                generate_page(item_path, template_path, dest_dir, basepath)
         else:
             # item path is a dir, so put it on the stack and create the dest dir
             stack.append(item_path)
@@ -78,7 +97,7 @@ def dfs_visit(current_source_dir: str, template_path: str, dest_dir: str, visite
         dir_name = os.path.basename(next_source_dir)
         new_dest_dir = os.path.join(dest_dir, dir_name)
         next_source_dir_path = os.path.join(current_source_dir, next_source_dir)
-        dfs_visit(next_source_dir_path, template_path, new_dest_dir, visited)
+        dfs_visit(next_source_dir_path, template_path, new_dest_dir, visited, basepath)
 
 
 def main():
