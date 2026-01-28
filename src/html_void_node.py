@@ -1,7 +1,7 @@
 from multiprocessing.sharedctypes import Value
 
-from src.html_tags import HTMLTags
-from src.htmlnode import HTMLNode
+from html_tags import HTMLTags
+from htmlnode import HTMLNode
 
 
 class VoidNode(HTMLNode):

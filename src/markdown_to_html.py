@@ -1,12 +1,14 @@
-import src.markdown_to_textnode as md2tn
-from src.html_leafnode import LeafNode
-from src.html_parentnode import ParentNode
-from src.html_tags import HTMLTags
-from src.htmlnode import HTMLNode
-from src.parse_markdown import BlockType
-from src.parse_markdown import block_to_block_type as b2bt
-from src.parse_markdown import markdown_to_blocks as md2b
-from src.textnode import TextNode, TextType
+from typing import Optional
+
+import markdown_to_textnode as md2tn
+from html_leafnode import LeafNode
+from html_parentnode import ParentNode
+from html_tags import HTMLTags
+from htmlnode import HTMLNode
+from parse_markdown import BlockType
+from parse_markdown import block_to_block_type as b2bt
+from parse_markdown import markdown_to_blocks as md2b
+from textnode import TextNode, TextType
 
 
 def markdown_to_html(markdown: str) -> HTMLNode:
@@ -73,7 +75,7 @@ def md_to_heading(md: str) -> HTMLNode:
             case _:
                 raise ValueError
 
-    children = text_to_children(md)
+    children = text_to_children(md.lstrip("#").lstrip())
     return ParentNode(map_heading(md).value, children)
 
 
@@ -87,17 +89,22 @@ def md_to_unordered_list(md: str) -> HTMLNode:
 def md_to_ordered_list(md: str) -> HTMLNode:
     if not isinstance(md, str):
         raise TypeError
-    children = _list_items_to_html(md)
+    children = _list_items_to_html(md, True)
     return ParentNode(HTMLTags.ORDERED_LIST.value, children)
 
 
-def _list_items_to_html(md: str) -> list[ParentNode]:
+def _list_items_to_html(md: str, ordered: Optional[bool] = False) -> list[ParentNode]:
     if not isinstance(md, str):
         raise TypeError
 
     lines = md.split("\n")
     result: list[ParentNode] = []
     for line in lines:
+        if ordered:
+            line = line.split(". ", 1)[1]
+        else:
+            line = line.split("- ", 1)[1]
+
         children: list[HTMLNode] = text_to_children(line)
         parent: ParentNode = ParentNode(HTMLTags.LIST_ITEM.value, children)
         result.append(parent)
@@ -112,7 +119,11 @@ def code_block_to_html(text: str):
 def blockquote_to_html(text: str):
     if not isinstance(text, str):
         raise TypeError
-    return ParentNode(HTMLTags.BLOCKQUOTE.value, text_to_children(text), None)
+    lines = text.split("\n")
+    for i in range(len(lines)):
+        lines[i] = lines[i][1:].lstrip()
+    lines = "\n".join(lines)
+    return ParentNode(HTMLTags.BLOCKQUOTE.value, text_to_children(lines), None)
 
 
 def text_to_children(text: str) -> list[HTMLNode]:

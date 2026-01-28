@@ -1,8 +1,8 @@
 import unittest
 
-from src.parse_markdown import BlockType
-from src.parse_markdown import block_to_block_type as b2bt
-from src.parse_markdown import markdown_to_blocks as md2b
+from parse_markdown import BlockType
+from parse_markdown import block_to_block_type as b2bt
+from parse_markdown import markdown_to_blocks as md2b
 from tests.utils import expected_error
 
 
@@ -107,12 +107,8 @@ class TestBlockToBlockType(unittest.TestCase):
 ```"""
 
     def test_happy_quotes(self):
-        quote = "< some quote here >"
-        multi_line_quote = """<
-        multi
-        line
-        quote
-        >"""
+        quote = "> some quote here"
+        multi_line_quote = """> multi\n> line\n> quote"""
         self.assertEqual(b2bt(quote), BlockType.QUOTE)
         self.assertEqual(b2bt(multi_line_quote), BlockType.QUOTE)
 

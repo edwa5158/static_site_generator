@@ -1,10 +1,15 @@
-from src.html_tags import HTMLTags
-from src.htmlnode import HTMLNode
 from typing import Sequence
+
+from html_tags import HTMLTags
+from htmlnode import HTMLNode
+
 
 class ParentNode(HTMLNode):
     def __init__(
-        self, tag: str, children: Sequence[HTMLNode], props: dict[str, str] | None = None
+        self,
+        tag: str,
+        children: Sequence[HTMLNode],
+        props: dict[str, str] | None = None,
     ) -> None:
         super().__init__(tag, None, children, props)
 

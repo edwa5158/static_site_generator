@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Optional, Sequence
 
-from src.html_tags import HTMLTags
+from html_tags import HTMLTags
 
 
 class HTMLNode:

@@ -1,9 +1,9 @@
 import unittest
 from multiprocessing.sharedctypes import Value
 
-from src.html_tags import HTMLTags
-from src.html_void_node import VoidNode
-from src.tests.utils import expected_error
+from html_tags import HTMLTags
+from html_void_node import VoidNode
+from tests.utils import expected_error
 
 
 class TestVoidNode(unittest.TestCase):

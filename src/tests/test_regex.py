@@ -1,11 +1,11 @@
 import unittest
 
-from src.parse_markdown import (
+from parse_markdown import (
     extract_markdown_images,
     extract_markdown_links,
     extract_title,
 )
-from src.tests.utils import expected_error
+from tests.utils import expected_error
 
 
 class TestExtractMarkdownImages(unittest.TestCase):
@@ -64,7 +64,7 @@ class TestExtractTitle(unittest.TestCase):
         _ = expected_error(self, lambda: extract_title(md), TypeError)  # type: ignore
 
     def test_with_title_later_in_doc(self):
-        md = "some text\n\n# a title"
+        md = "some text\n\n# a title "
         title = extract_title(md)
         expected = "a title"
         self.assertEqual(title, expected)

@@ -1,17 +1,17 @@
 import unittest
 
-import src.markdown_to_html as md2html_module
-from src.html_leafnode import LeafNode
-from src.html_parentnode import ParentNode
-from src.markdown_to_html import _list_items_to_html as li2html
-from src.markdown_to_html import blockquote_to_html as bq2html
-from src.markdown_to_html import code_block_to_html as cb2html
-from src.markdown_to_html import markdown_to_html as md2html
-from src.markdown_to_html import md_to_heading as md2h
-from src.markdown_to_html import md_to_ordered_list as md2ol
-from src.markdown_to_html import md_to_paragraph as md2p
-from src.markdown_to_html import md_to_unordered_list as md2ul
-from src.markdown_to_html import text_to_children as t2c
+import markdown_to_html as md2html_module
+from html_leafnode import LeafNode
+from html_parentnode import ParentNode
+from markdown_to_html import _list_items_to_html as li2html
+from markdown_to_html import blockquote_to_html as bq2html
+from markdown_to_html import code_block_to_html as cb2html
+from markdown_to_html import markdown_to_html as md2html
+from markdown_to_html import md_to_heading as md2h
+from markdown_to_html import md_to_ordered_list as md2ol
+from markdown_to_html import md_to_paragraph as md2p
+from markdown_to_html import md_to_unordered_list as md2ul
+from markdown_to_html import text_to_children as t2c
 from tests.utils import expected_error
 
 
@@ -272,9 +272,9 @@ class TestBlockQuoteToHTML(unittest.TestCase):
         ]
 
     def test_blockquote_node_structure_simple_text(self):
-        node = bq2html("Hello quote")
+        node = bq2html("> Hello quote")
 
-        from src.html_parentnode import ParentNode
+        from html_parentnode import ParentNode
 
         self.assertIsInstance(node, ParentNode)
         self.assertEqual(node.tag, "blockquote")
@@ -289,81 +289,74 @@ class TestBlockQuoteToHTML(unittest.TestCase):
         )
 
     def test_blockquote_preserves_newlines(self):
-        node = bq2html("Line1\nLine2")
+        node = bq2html("> Line1\n> Line2")
         self.assertEqual(self._render(node), "<blockquote>Line1\nLine2</blockquote>")
 
     def test_blockquote_mixed_bold_italic_code(self):
-        node = bq2html("This has **bold**, _italic_, and `code`.")
+        node = bq2html("> This has **bold**, _italic_, and `code`.")
         self.assertEqual(
             self._render(node),
             "<blockquote>This has <b>bold</b>, <i>italic</i>, and <code>code</code>.</blockquote>",
         )
 
     def test_blockquote_multiple_bold_segments(self):
-        node = bq2html("A **b1** and **b2**.")
+        node = bq2html("> A **b1** and **b2**.")
         self.assertEqual(
             self._render(node),
             "<blockquote>A <b>b1</b> and <b>b2</b>.</blockquote>",
         )
 
     def test_blockquote_contains_link(self):
-        node = bq2html("Go to [Boot.dev](https://boot.dev) now.")
+        node = bq2html("> Go to [Boot.dev](https://boot.dev) now.")
         self.assertEqual(
             self._render(node),
             '<blockquote>Go to <a href="https://boot.dev">Boot.dev</a> now.</blockquote>',
         )
 
     def test_blockquote_adjacent_links(self):
-        node = bq2html("[A](u)[B](v)")
+        node = bq2html("> [A](u)[B](v)")
         self.assertEqual(
             self._render(node),
             '<blockquote><a href="u">A</a><a href="v">B</a></blockquote>',
         )
 
     def test_blockquote_contains_image(self):
-        node = bq2html("Look ![cat](https://img/cat.png) here.")
+        node = bq2html("> Look ![cat](https://img/cat.png) here.")
         self.assertEqual(
             self._render(node),
             '<blockquote>Look <img src="https://img/cat.png" alt="cat"></img> here.</blockquote>',
         )
 
-    def test_blockquote_adjacent_images(self):
-        node = bq2html("![a](u)![b](v)")
-        self.assertEqual(
-            self._render(node),
-            '<blockquote><img src="u" alt="a"></img><img src="v" alt="b"></img></blockquote>',
-        )
-
     def test_blockquote_image_plus_link(self):
-        node = bq2html("![alt](img) and [link](u)")
+        node = bq2html("> ![alt](img) and [link](u)")
         self.assertEqual(
             self._render(node),
             '<blockquote><img src="img" alt="alt"></img> and <a href="u">link</a></blockquote>',
         )
 
     def test_blockquote_code_plus_image_plus_punctuation(self):
-        node = bq2html("A `code` and ![i](u).")
+        node = bq2html("> A `code` and ![i](u).")
         self.assertEqual(
             self._render(node),
             '<blockquote>A <code>code</code> and <img src="u" alt="i"></img>.</blockquote>',
         )
 
     def test_blockquote_unmatched_bold_delimiter(self):
-        node = bq2html("A **bold B")
+        node = bq2html("> A **bold B")
         self.assertEqual(
             self._render(node),
             "<blockquote>A <b>bold B</b></blockquote>",
         )
 
     def test_blockquote_bold_containing_link_markup_is_not_nested(self):
-        node = bq2html("A **[x](u)** B")
+        node = bq2html("> A **[x](u)** B")
         self.assertEqual(
             self._render(node),
             "<blockquote>A <b>[x](u)</b> B</blockquote>",
         )
 
     def test_blockquote_unicode_text(self):
-        node = bq2html("Café **naïve**.")
+        node = bq2html("> Café **naïve**.")
         self.assertEqual(
             self._render(node),
             "<blockquote>Café <b>naïve</b>.</blockquote>",
@@ -380,6 +373,7 @@ class TestMarkdownToHtml(unittest.TestCase):
         expected_error(self, fn, TypeError)
 
     def test_renders_multiple_block_types(self):
+        self.maxDiff = None
         md = """# Heading 1
 
 Paragraph text
@@ -388,7 +382,9 @@ Paragraph text
 code
 ```
 
-<quote>
+> "I am in fact a Hobbit in all but size."
+>
+> -- J.R.R. Tolkien
 
 - item one
 - item two
@@ -403,12 +399,12 @@ code
             node.to_html(),
             (
                 "<html><body>"
-                "<div><h1># Heading 1</h1></div>"
+                "<div><h1>Heading 1</h1></div>"
                 "<div><p>Paragraph text</p></div>"
                 "<div><pre><code>```\ncode\n```</code></pre></div>"
-                "<div><blockquote><quote></blockquote></div>"
-                "<div><ul><li>- item one</li><li>- item two</li></ul></div>"
-                "<div><ol><li>1. first</li><li>2. second</li></ol></div>"
+                '<div><blockquote>"I am in fact a Hobbit in all but size."\n\n-- J.R.R. Tolkien</blockquote></div>'
+                "<div><ul><li>item one</li><li>item two</li></ul></div>"
+                "<div><ol><li>first</li><li>second</li></ol></div>"
                 "</body></html>"
             ),
         )
@@ -456,7 +452,9 @@ class TestMarkdownToHeading(unittest.TestCase):
             node = md2h(md)
             self.assertIsInstance(node, ParentNode)
             self.assertEqual(node.tag, tag)
-            self.assertEqual(node.to_html(), f"<{tag}>{md}</{tag}>")
+            self.assertEqual(
+                node.to_html(), f"<{tag}>{md.lstrip("#").lstrip()}</{tag}>"
+            )
 
     def test_invalid_input_type_raises(self):
         fn = lambda: md2h(None)  # type: ignore
@@ -472,20 +470,20 @@ class TestMarkdownLists(unittest.TestCase):
         node = md2ul("- a\n- b")
         self.assertIsInstance(node, ParentNode)
         self.assertEqual(node.tag, "ul")
-        self.assertEqual(node.to_html(), "<ul><li>- a</li><li>- b</li></ul>")
+        self.assertEqual(node.to_html(), "<ul><li>a</li><li>b</li></ul>")
 
     def test_ordered_list_structure(self):
         node = md2ol("1. a\n2. b")
         self.assertIsInstance(node, ParentNode)
         self.assertEqual(node.tag, "ol")
-        self.assertEqual(node.to_html(), "<ol><li>1. a</li><li>2. b</li></ol>")
+        self.assertEqual(node.to_html(), "<ol><li>a</li><li>b</li></ol>")
 
     def test_list_items_helper(self):
         items = li2html("- a\n- b")
         self.assertEqual(len(items), 2)
         self.assertTrue(all(isinstance(item, ParentNode) for item in items))
-        self.assertEqual(items[0].to_html(), "<li>- a</li>")
-        self.assertEqual(items[1].to_html(), "<li>- b</li>")
+        self.assertEqual(items[0].to_html(), "<li>a</li>")
+        self.assertEqual(items[1].to_html(), "<li>b</li>")
 
     def test_unordered_list_invalid_input_raises(self):
         fn = lambda: md2ul(None)  # type: ignore

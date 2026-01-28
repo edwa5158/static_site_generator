@@ -1,13 +1,9 @@
 import unittest
 
-from src.markdown_to_textnode import split_nodes_delimiter as snbd
-from src.markdown_to_textnode import (
-    split_nodes_image,
-    split_nodes_link,
-    text_to_textnodes,
-)
-from src.textnode import TextNode, TextType
+from markdown_to_textnode import split_nodes_delimiter as snbd
+from markdown_to_textnode import split_nodes_image, split_nodes_link, text_to_textnodes
 from tests.utils import expected_error
+from textnode import TextNode, TextType
 
 
 class TestMarkdownToTextNode(unittest.TestCase):

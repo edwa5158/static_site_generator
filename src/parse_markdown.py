@@ -95,9 +95,9 @@ def is_code(md: str) -> bool:
 
 
 def is_quote(md: str) -> bool:
-    pat = r"<[\s\S]*>"
-    match = re.fullmatch(pat, md)
-    return True if match else False
+    # pat = r">.*"
+    # match = re.fullmatch(pat, md)
+    return "\n".join(re.findall(r">.*", md)) == md
 
 
 def is_unordered_list(md: str) -> bool:
