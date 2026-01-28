@@ -3,11 +3,13 @@ import shutil
 
 
 def _reset_public(public):
+    """Deletes the contents of the public directory"""
     shutil.rmtree(public)
     os.mkdir(public)
 
 
 def get_static_assets(static_dir: str, public_dir: str) -> None:
+    """Clears the public directory, then copies all assets from the static director to the public directory."""
     if not (isinstance(static_dir, str) and isinstance(public_dir, str)):
         raise TypeError
 
@@ -24,23 +26,23 @@ def get_static_assets(static_dir: str, public_dir: str) -> None:
     dfs_visit(public, static, visited)
 
 
-def dfs_visit(public, node, visited):
+def dfs_visit(dest_dir: str, source_dir: str, visited: set):
     stack: list[str] = []
-    visited.add(node)
-    files = os.listdir(node)
+    visited.add(source_dir)
+    files = os.listdir(source_dir)
     for file in files:
-        file_path = os.path.join(node, file)
+        file_path = os.path.join(source_dir, file)
         if not os.path.isfile(file_path):
             stack.append(file)
         else:
-            shutil.copy(file_path, public)
+            shutil.copy(file_path, dest_dir)
 
     while len(stack) > 0:
         dir = stack.pop()
-        pub = os.path.join(public, dir)
+        pub = os.path.join(dest_dir, dir)
         if not os.path.exists(pub):
-                os.mkdir(pub)
-        stat = os.path.join(node, dir)
+            os.mkdir(pub)
+        stat = os.path.join(source_dir, dir)
         dfs_visit(pub, stat, visited)
 
 

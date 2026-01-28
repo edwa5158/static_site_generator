@@ -1,4 +1,4 @@
-from generate_page import generate_page
+from generate_page import generate_pages_recursive
 from get_static import get_static_assets
 
 
@@ -7,10 +7,7 @@ def main():
     public = "public"
     get_static_assets(static, public)
 
-    md = "content/index.md"
-    template = "template.html"
-
-    generate_page(md, template, public)
+    generate_pages_recursive("content", "template.html", public)
 
 
 if __name__ == "__main__":

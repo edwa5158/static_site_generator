@@ -69,15 +69,25 @@ def extract_title(md: str) -> str:
     if not isinstance(md, str):
         raise TypeError("The supplied markdown must be a string.")
 
-    for block in markdown_to_blocks(md):
+    blocks = markdown_to_blocks(md)
+    for block in blocks:
         if is_title(block):
             return block[2:]
 
-    raise ValueError("The markdown is missing a title")
+    error_message = (
+        "\n\n\n" + "The markdown is missing a title".center(100, "=") + "\n\n"
+    )
+    error_message += "md".center(100, "-") + "\n"
+    error_message += f"{md}" + "\n\n"
+    error_message += "blocks".center(100, "-") + "\n"
+    error_message += str(blocks)
+    error_message += "=" * 100 + "\n\n\n"
+
+    raise ValueError(error_message)
 
 
 def is_title(md: str) -> bool:
-    pat = r"#{1} [\w\d\s]+"
+    pat = r"#{1} .*"
     match = re.fullmatch(pat, md)
     return True if match else False
 
