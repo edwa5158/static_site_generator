@@ -33,7 +33,7 @@ def generate_page(
     html = template.replace("{{ Title }}", title)
     html = html.replace("{{ Content }}", html_content)
     html = html.replace('href="/', f'href="{basepath}')
-    html = html.replace('src="/', f"{basepath}")
+    html = html.replace('src="/', f'src="{basepath}')
 
     # if not os.path.exists(dest_full_path):
     os.makedirs(html_dest_full_path, exist_ok=True)
@@ -109,8 +109,8 @@ def main():
     # basepath =
     # generate_pages_recursive(content, template, dest, basepath)
 
-    basepath: str = argv[0] or "\\"
-
+    basepath: str = argv[1] or "\\"
+    print(f"{basepath=}")
     static = "static"
     public = "docs"
     get_static_assets(static, public)
